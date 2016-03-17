@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="page-header">Users</h1>
+            <table class="table table-striped"> 
+                <thead> 
+                    <tr> 
+                        <th>#</th> 
+                        <th>Name</th> 
+                        <th>Email</th> 
+                        <th>Actions</th>
+                    </tr> 
+                </thead> 
+                <tbody> 
+                {% for user in users %}
+                    <tr> 
+                        <th scope="row">{{user.id}}</th> 
+                        <td>{{user.name}}</td> 
+                        <td>{{user.email}}</td> 
+                        <td>
+                            <a href="/users/detail/{{user.id}}" class="btn btn-sm btn-success">Detail</a>
+                            <a href="/users/edit/{{user.id}}" class="btn btn-sm btn-default">Edit</a>
+                            <a href="/users/delete/{{user.id}}" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody> 
+            </table>
+            <a href="/users/create" class="btn btn-sm btn-warning">Create User</a>
+        </div>
+        
+    </div>
+    
+{% endblock %}
+
+{% block stylesheets %}
+
+{% endblock %}
+
