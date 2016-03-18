@@ -9,15 +9,17 @@
         {% if user.profileImage %}
             <div class="col-md-12"><img src="{{user.profileImage}}" alt="{{user.name}}" class="thumbnail" width="200px"></div>
         {% endif %}
-        <div class="col-md-1">
+        <div class="col-md-2">
             <p><strong>Name:</strong></p>
             <p><strong>E-mail:</strong></p>
+            <p><strong>Created At:</strong></p>
             <p><strong>Bio:</strong></p>
             <p><a href="/users" class="btn btn-sm btn-default">Back</a></p>
         </div>
-        <div class="col-md-11">
+        <div class="col-md-10">
             <p>{{user.name}}</p>
             <p>{{user.email}}</p>
+            <p>{{user.createdAt|date('d/m/Y')}}</p>
             <p>{{user.bio}}</p>
         </div>
     </div>

@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="page-header">{{ post.title }}</h1>
+            <h4>{{ post.summary }}</h4>
+            <small>Published At: {{ post.publishedDate | date('d/m/Y')}}</small>
+            {% if post.updatedDate %}
+                <small> | Updated At: {{ post.updatedDate | date('d/m/Y') }}</small>
+            {% endif %}
+
+            {% if post.featuredImage %}
+                <img src="{{post.featuredImage}}" alt="{{post.title}}" class="thumbnail" width="100%">
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {{ post.content | raw }}
+
+            <p>Post by {{ author.name }}</p>
+
+            <div class="media-body">
+                <div class="media-left">
+                    <img class="media-object mr-2" src="{{author.profileImage}}" alt="{{ author.name }}" width="200px" style="border-radius:200px;">
+                </div>
+                <div class="media-left">
+                    <h4 class="media-heading text-primary">
+                        <strong>
+                            {{ author.name }}
+                        </strong>
+                    </h4>
+                    <div class="align-right ver-mais-link">
+                      <p><a href="/users/{{ author.id }}" class="btn btn-primary btn-sm">Author Profile</a></p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <hr>
+        <div class="col-md-12">
+            
+        </div>
+    </div>
+
+    
+{% endblock %}
+
+{% block stylesheets %}
+
+{% endblock %}
+

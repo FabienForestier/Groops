@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
 class UserController extends Controller
 {
@@ -45,8 +46,13 @@ class UserController extends Controller
 
         $form = $this->createFormBuilder($user)
             ->add('name',TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('username',TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('email',TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
-            ->add('password',PasswordType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('plainPassword', RepeatedType::class, array(
+                'type' => PasswordType::class,
+                'first_options'  => array('label' => 'Password','attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')),
+                'second_options' => array('label' => 'Repeat Password','attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            )
             ->add('profileImage',TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('bio',TextareaType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('submit',SubmitType::class, array('attr' => array('class' => 'btn btn-success', 'style' => 'margin-bottom:15px')))
@@ -59,15 +65,20 @@ class UserController extends Controller
                 //Get data
                 $name = $form['name']->getData();
                 $email = $form['email']->getData();
-                $password = $form['password']->getData();
+                $username = $form['username']->getData();
+                //$plainPassword = $form['plainPassword']->getData();
+                $password = $this->get('security.password_encoder')->encodePassword($user, $user->getPlainPassword());
                 $profileImage = $form['profileImage']->getData();
                 $bio = $form['bio']->getData();
+                $createdAt = new \Datetime('now');
 
                 $user->setName($name);
                 $user->setEmail($email);
+                $user->setUsername($username);
                 $user->setPassword($password);
                 $user->setProfileImage($profileImage);
                 $user->setBio($bio);
+                $user->setCreatedAt($createdAt);
 
                 $em = $this->getDoctrine()->getManager();
 
@@ -93,15 +104,16 @@ class UserController extends Controller
             ->getRepository('AppBundle:User')
             ->find($id);
 
+        $user->setPlainPassword("well well");
+
         $form = $this->createFormBuilder($user)
             ->add('name',TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('username',TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px', 'readonly' => true)))
             ->add('email',TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
-            //->add('password',PasswordType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('profileImage',TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('bio',TextareaType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('submit',SubmitType::class, array('attr' => array('class' => 'btn btn-success', 'style' => 'margin-bottom:15px')))
             ->getForm();
-
 
             $form->handleRequest($request);
 
@@ -110,13 +122,14 @@ class UserController extends Controller
                 //Get data
                 $name = $form['name']->getData();
                 $email = $form['email']->getData();
-                //$password = $form['password']->getData();
+                $username = $form['username']->getData();
                 $profileImage = $form['profileImage']->getData();
                 $bio = $form['bio']->getData();
 
                 $user->setName($name);
                 $user->setEmail($email);
-                //$user->setPassword($password);
+                $user->setUsername($username);
+                $user->setPassword($user->getPassword());
                 $user->setProfileImage($profileImage);
                 $user->setBio($bio);
 

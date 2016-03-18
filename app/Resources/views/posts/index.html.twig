@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="page-header">Posts</h1>
+            <table class="table table-striped"> 
+                <thead> 
+                    <tr> 
+                        <th>#</th> 
+                        <th>Title</th> 
+                        <th>Summary</th> 
+                        <th>Published</th>
+                    </tr> 
+                </thead> 
+                <tbody> 
+                {% for post in posts %}
+                    <tr> 
+                        <th scope="row">{{post.id}}</th> 
+                        <td>{{post.title}}</td> 
+                        <td>{{post.summary}}</td>
+                        <td>{{post.publishedDate | date('d/m/Y')}} at {{post.publishedDate | date('H:i:s')}}</td>
+                        <td>
+                            <a href="/posts/detail/{{post.id}}" class="btn btn-sm btn-success">Detail</a>
+                            <a href="/posts/edit/{{post.id}}" class="btn btn-sm btn-default">Edit</a>
+                            <a href="/posts/delete/{{post.id}}" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody> 
+            </table>
+            <a href="/posts/create" class="btn btn-sm btn-warning">Create Post</a>
+        </div>
+        
+    </div>
+    
+{% endblock %}
+
+{% block stylesheets %}
+
+{% endblock %}
+

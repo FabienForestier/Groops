@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<div class="row">
+    <h1 class="page-header">Edit Post</h1>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    	<a href="/posts" class="btn btn-sm btn-default">Back</a>
+    {{ form_end(form) }}
+
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+<link href="http://cdn.quilljs.com/latest/quill.snow.css" rel="stylesheet">
+{% endblock %}
+
+{% block javascripts %}
+<script src="http://cdn.quilljs.com/latest/quill.js"></script>
+<script>
+	var textarea = document.getElementById("text-editor");
+	var editor = new Quill(textarea);
+</script>
+{% endblock %}
+
+
