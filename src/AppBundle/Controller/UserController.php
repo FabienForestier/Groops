@@ -34,7 +34,24 @@ class UserController extends Controller
         $user = $this->getDoctrine()
             ->getRepository('AppBundle:User')
             ->find($id);
-        return $this->render('users/detail.html.twig',array('user' => $user));
+        return $this->render('users/detail.html.twig', array('user' => $user));
+    }
+
+    /**
+     * @Route("/{username}", name="user-profile")
+     */
+    public function profileAction($username)
+    {
+        if($this->getUser() === null) {
+            return $this->redirectToRoute("login");
+        }
+        else {
+            $user = $this->getDoctrine()
+            ->getRepository('AppBundle:User')
+            ->findOneBy(array('username' => $username));
+
+            return $this->render('users/detail.html.twig', array('user' => $user));    
+        }    
     }
 
      /**
@@ -79,6 +96,7 @@ class UserController extends Controller
                 $user->setProfileImage($profileImage);
                 $user->setBio($bio);
                 $user->setCreatedAt($createdAt);
+                $user->setRole("USER_ROLE");
 
                 $em = $this->getDoctrine()->getManager();
 

@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  */
-class User implements UserInterface
+class User implements UserInterface, \Serializable
 {
     /**
      * @var int
@@ -38,10 +38,16 @@ class User implements UserInterface
      */
     private $email;
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=25, unique=true)
      * @Assert\NotBlank()
      */
     private $username;
+
+    /**
+     * @ORM\Column(name="is_active", type="boolean")
+     */
+    private $isActive;
+
     /**
      * @ORM\Column(name="password", type="string", length=64)
      *
@@ -76,6 +82,22 @@ class User implements UserInterface
      * @Assert\NotBlank()
      */
     private $plainPassword;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="role", type="string", length=20, nullable=false)
+     */
+    private $role;
+
+
+
+    public function __construct()
+    {
+        $this->isActive = true;
+        // may not be needed, see section on salt below
+        // $this->salt = md5(uniqid(null, true));
+    }
 
     public function getPlainPassword()
     {
@@ -248,7 +270,12 @@ class User implements UserInterface
 
     public function getRoles()
     {
-        return null;
+         return $this->role;
+    }
+
+    public function setRole($role)
+    {
+        $this->role = $role;
     }
 
     public function getUsername()
@@ -263,5 +290,53 @@ class User implements UserInterface
 
     public function eraseCredentials()
     {
+    }
+
+    /** @see \Serializable::serialize() */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->username,
+            $this->password,
+            // see section on salt below
+            // $this->salt,
+        ));
+    }
+
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->username,
+            $this->password,
+            // see section on salt below
+            // $this->salt
+        ) = unserialize($serialized);
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return User
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
     }
 }

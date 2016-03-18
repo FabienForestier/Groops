@@ -67,7 +67,6 @@ class PostController extends Controller
             ->add('summary',TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('content',TextareaType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px;min-height:300px;')))
             ->add('featuredImage',TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
-            ->add('author', ChoiceType::class, array('choices' => $usersId, 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('status', ChoiceType::class, array('choices' => array("Draft" => 0, "Published" => 1), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('submit',SubmitType::class, array('attr' => array('class' => 'btn btn-success', 'style' => 'margin-bottom:15px')))
             ->getForm();
@@ -81,7 +80,7 @@ class PostController extends Controller
                 $summary = $form['summary']->getData();
                 $content = $form['content']->getData();
                 $featuredImage = $form['featuredImage']->getData();
-                $author = $form['author']->getData();
+                $author = $this->getUser()->getId();
                 $status = $form['status']->getData();
                 $publishedDate = new \Datetime('now');
 
@@ -97,6 +96,7 @@ class PostController extends Controller
                 $post->setStatus($status);
                 $post->setPublishedDate($publishedDate);
                 $post->setSlug($slug);
+                $post->setUpdatedDate($publishedDate);
 
                 $em = $this->getDoctrine()->getManager();
 
