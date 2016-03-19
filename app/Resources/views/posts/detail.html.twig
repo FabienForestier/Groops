@@ -40,7 +40,18 @@
         <hr>
         <div class="col-md-12">
             <h3>Comments</h3>
-
+            <ul>
+            {% for comment in comments %}
+                <li class="well">
+                    <img src="{{comment.profileImage}}" alt="{{comment.username}}" height="50px">
+                    <strong>{{comment.name}} </strong>said: 
+                    <p>{{comment.content | raw }}</p>
+                    <small>{{comment.publishedDate | date('d/m/Y') }}</small>
+                    <a href="/comment/delete/{{comment.id}}/{{post.id}}" class="btn btn-sm btn-danger pull-right">Delete</a>
+                </li>
+            {% endfor %}
+            </ul>
+            <hr>
             <h5>New Comment</h5>
             {{ form_start(commentForm) }}
              {{ form_widget(commentForm) }}

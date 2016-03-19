@@ -2,24 +2,18 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Comment;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use AppBundle\Entity\Comment;
-use AppBundle\Form\CommentType;
 
-/**
- * Comment controller.
- *
- * @Route("/comment")
- */
 class CommentController extends Controller
 {
     /**
      * Lists all Comment entities.
      *
-     * @Route("/", name="comment_index")
+     * @Route("/comment", name="comment_index")
      * @Method("GET")
      */
     public function indexAction()
@@ -36,7 +30,7 @@ class CommentController extends Controller
     /**
      * Creates a new Comment entity.
      *
-     * @Route("/new", name="comment_new")
+     * @Route("/comment/new", name="comment_new")
      * @Method({"GET", "POST"})
      */
     public function newAction(Request $request)
@@ -62,7 +56,7 @@ class CommentController extends Controller
     /**
      * Finds and displays a Comment entity.
      *
-     * @Route("/{id}", name="comment_show")
+     * @Route("/comment/{id}", name="comment_show")
      * @Method("GET")
      */
     public function showAction(Comment $comment)
@@ -78,7 +72,7 @@ class CommentController extends Controller
     /**
      * Displays a form to edit an existing Comment entity.
      *
-     * @Route("/{id}/edit", name="comment_edit")
+     * @Route("/comment/{id}/edit", name="comment_edit")
      * @Method({"GET", "POST"})
      */
     public function editAction(Request $request, Comment $comment)
@@ -105,21 +99,19 @@ class CommentController extends Controller
     /**
      * Deletes a Comment entity.
      *
-     * @Route("/{id}", name="comment_delete")
-     * @Method("DELETE")
+     * @Route("/comment/delete/{id}/{postId}", name="comment_delete")
      */
-    public function deleteAction(Request $request, Comment $comment)
+    public function deleteAction(Request $request, $id, $postId)
     {
-        $form = $this->createDeleteForm($comment);
-        $form->handleRequest($request);
+        $em = $this->getDoctrine()->getManager();
+        $comment = $this->getRepository('AppBundle:Comment')->find($id);
+        
+        $em->remove($comment);
+        $em->flush();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($comment);
-            $em->flush();
-        }
+        $this->addFlash('notice','Comment Deleted');
 
-        return $this->redirectToRoute('comment_index');
+        return $this->redirectToRoute('post-detail', array("id" => $postId));
     }
 
     /**
