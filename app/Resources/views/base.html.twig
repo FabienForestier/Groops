@@ -31,9 +31,9 @@
               <ul class="nav navbar-nav navbar-right">
                     {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                     <li>
-                        <img src="{{app.user.profileImage}}" class="img-rounded" width="15px" alt="{{app.user.username}}">
                         <a href="/logout">Logout</a>
                     </li>
+                    <li><a style="padding:7px 0px;"><img src="{{app.user.profileImage}}" height="35px" alt="{{app.user.username}}"></a></li>
                     {% else %}
                     <li><a href="/login">Login</a></li>
                     {% endif %}
