@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Post;
 use AppBundle\Entity\User;
+use AppBundle\Entity\Comment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +30,7 @@ class PostController extends Controller
     /**
      * @Route("/posts/detail/{id}", name="post-detail")
      */
-    public function detailAction($id)
+    public function detailAction($id, Request $request)
     {
         $post = $this->getDoctrine()
             ->getRepository('AppBundle:Post')
@@ -41,8 +42,53 @@ class PostController extends Controller
 
         return $this->render('posts/detail.html.twig', array(
             'post' => $post,
-            'author' => $author
+            'author' => $author/*,
+            'commentForm' => $commentForm->createView()*/
         ));
+    }
+
+    /**
+     * @Route("/comment/{postId}/new", name="comment_new")
+     * @Method("POST")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     * @ParamConverter("post", options={"mapping": {"postId": "id"}})
+     *
+     * NOTE: The ParamConverter mapping is required because the route parameter
+     * (postSlug) doesn't match any of the Doctrine entity properties (slug).
+     * See http://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/converters.html#doctrine-converter
+     */
+    public function commentNewAction(Request $request)
+    {
+        // $form = $this->createFormBuilder()
+        //     ->add('content',TextareaType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px;min-height:300px;')))
+        //     ->add('submit',SubmitType::class, array('attr' => array('value' => 'Send Comment', 'class' => 'btn btn-success', 'style' => 'margin-bottom:15px')))
+        //     ->getForm();
+
+        // $form->handleRequest($request);
+
+        // if ($form->isSubmitted() && $form->isValid()) {
+        //     /** @var Comment $comment */
+        //     $authorId = $this->getUser()->getId();
+        //     $postId = $post->getId();
+        //     $content = $form['content']->getData();
+        //     //$publishedDate = new \DateTime('now');
+
+        //     $comment->setAuthorId($authorId);
+        //     $comment->setPostId($postId);
+        //     $comment->setContent($content);
+        //     //$comment->setPublishedDate($publishedDate);
+        //     $comment->setLikes(0);
+
+        //     $em = $this->getDoctrine()->getManager();
+        //     $em->persist($comment);
+        //     $em->flush();
+
+        //     return $this->redirectToRoute('post-detail', array('id' => $post->getId()));
+        // }
+        // return $this->render('comment/new.html.twig', array(
+        //     'post' => $post,
+        //     'form' => $form->createView(),
+        // ));
     }
 
      /**
@@ -55,13 +101,6 @@ class PostController extends Controller
             ->getRepository('AppBundle:User')
             ->findAll();
 
-        $usersId = [];
-
-        foreach($users as $user) {
-            array_push($usersId, $user->getId());
-        }
-
-        // foreach($users as $user){echo "$user->getUsername() => $user->getId()"}
         $form = $this->createFormBuilder($post)
             ->add('title',TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
             ->add('summary',TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
