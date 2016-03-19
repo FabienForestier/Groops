@@ -39,7 +39,12 @@
         </div>
         <hr>
         <div class="col-md-12">
-            
+            <h3>Comments</h3>
+
+            <h5>New Comment</h5>
+            {{ form_start(commentForm) }}
+             {{ form_widget(commentForm) }}
+            {{ form_end(commentForm) }}
         </div>
     </div>
 
